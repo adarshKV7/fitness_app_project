@@ -1,12 +1,17 @@
-// ignore_for_file: prefer_const_constructors, prefer_const_literals_to_create_immutables, prefer_const_declarations, sized_box_for_whitespace
+// ignore_for_file: prefer_const_constructors, prefer_const_declarations, sized_box_for_whitespace, prefer_const_literals_to_create_immutables, deprecated_member_use, unused_local_variable
 
-import 'package:fitness_app_project/controller/firebase_controller.dart';
+// ignore_for_file: prefer_const_constructors, prefer_const_declarations, sized_box_for_whitespace, prefer_const_literals_to_create_immutables, deprecated_member_use
+
+import 'package:carousel_slider/carousel_slider.dart';
+import 'package:fitness_app_project/controller/home_screen_controller.dart';
+
 import 'package:flutter/material.dart';
-import 'package:fitness_app_project/core/constatns/color_constants.dart';
-import 'package:fitness_app_project/core/constatns/image_constants.dart';
 import 'package:provider/provider.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:percent_indicator/percent_indicator.dart';
+import 'package:fitness_app_project/controller/firebase_controller.dart';
+import 'package:fitness_app_project/core/constatns/color_constants.dart';
+import 'package:fitness_app_project/core/constatns/image_constants.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -17,8 +22,17 @@ class HomeScreen extends StatefulWidget {
 
 class _HomeScreenState extends State<HomeScreen> {
   @override
+  void initState() {
+    super.initState();
+    final homeController = context.read<HomeScreenController>();
+    homeController.convertToModel();
+  }
+
+  @override
   Widget build(BuildContext context) {
     final firebaseController = context.read<FirebaseController>();
+    final homeController = context.watch<HomeScreenController>();
+
     return Scaffold(
       backgroundColor: ColorConstants.white,
       body: SafeArea(
@@ -166,6 +180,47 @@ class _HomeScreenState extends State<HomeScreen> {
                       ],
                     ),
                   ),
+                ),
+                SizedBox(height: 30),
+                CarouselSlider(
+                  options: CarouselOptions(
+                    height: 300,
+                    autoPlay: true,
+                    enlargeCenterPage: true,
+                    aspectRatio: 16 / 9,
+                    autoPlayCurve: Curves.fastOutSlowIn,
+                    enableInfiniteScroll: true,
+                    autoPlayAnimationDuration: Duration(milliseconds: 800),
+                    viewportFraction: 0.8,
+                  ),
+                  items: homeController.carosalModelList.map((element) {
+                    return GestureDetector(
+                      onTap: () => homeController.launchURL(element.url!),
+                      child: Container(
+                        margin: EdgeInsets.all(5.0),
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(10.0),
+                          image: DecorationImage(
+                            image: AssetImage(element
+                                .image!), // Update the image path as needed
+                            fit: BoxFit.cover,
+                          ),
+                        ),
+                        child: Center(
+                          child: Text(
+                            element.text!,
+                            style: TextStyle(
+                              fontSize: 16.0,
+                              color: Colors.white,
+                              fontWeight: FontWeight.bold,
+                              backgroundColor: Colors.black45,
+                            ),
+                            textAlign: TextAlign.center,
+                          ),
+                        ),
+                      ),
+                    );
+                  }).toList(),
                 ),
                 SizedBox(height: 30),
                 Text(

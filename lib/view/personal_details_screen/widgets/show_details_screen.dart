@@ -11,7 +11,7 @@ class ShowDetailsScreen extends StatefulWidget {
 }
 
 class _ShowDetailsScreenState extends State<ShowDetailsScreen> {
-  final FirebaseController _firebaseController = FirebaseController();
+  final FirebaseController firebaseController = FirebaseController();
 
   String name = "";
   String gender = "";
@@ -26,7 +26,7 @@ class _ShowDetailsScreenState extends State<ShowDetailsScreen> {
   }
 
   Future<void> _fetchUserData() async {
-    final userData = await _firebaseController.fetchUserData();
+    final userData = await firebaseController.fetchUserData();
     if (userData != null) {
       setState(() {
         name = "${userData['firstName']} ${userData['lastName']}";
